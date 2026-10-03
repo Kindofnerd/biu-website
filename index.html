@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIU必优 — Agent 定制与小程序开发工作室</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --bg-card: #111111;
+    --bg-card-hover: #1a1a1a;
+    --orange: #f97316;
+    --orange-light: #fb923c;
+    --orange-glow: rgba(249, 115, 22, 0.15);
+    --orange-border: rgba(249, 115, 22, 0.2);
+    --text: #ffffff;
+    --text-dim: #a1a1aa;
+    --text-muted: #71717a;
+    --border: rgba(255,255,255,0.08);
+    --border-orange: rgba(249, 115, 22, 0.3);
+    --radius: 24px;
+    --radius-sm: 16px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans SC', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.7;
+  }
+
+  /* ── Navigation ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(24px) saturate(1.2);
+    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    background: rgba(10, 10, 10, 0.25);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.4s;
+  }
+
+  nav.scrolled {
+    padding: 16px 48px;
+    background: rgba(10, 10, 10, 0.95);
+  }
+
+  .logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 2px;
+    position: relative;
+  }
+
+
+  .logo::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: -12px;
+    width: 10px;
+    height: 10px;
+    background: var(--orange);
+    border-radius: 50%;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    background: none;
+    border: none;
+    z-index: 1001;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text);
+    transition: all 0.3s ease;
+  }
+
+  .hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--orange); }
+
+  .nav-cta {
+    padding: 12px 28px;
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+
+  .nav-cta:hover {
+    background: var(--orange-light);
+    box-shadow: 0 0 30px rgba(249, 115, 22, 0.4);
+  }
+
+  /* ── Hero ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+    background: url('images/hero-bg.png') center 30% / cover no-repeat;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.3) 50%, var(--bg) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-glow {
+    display: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 20px;
+    background: var(--orange);
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-badge span {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+  }
+
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 .highlight {
+    color: var(--orange);
+  }
+
+  .hero-desc {
+    font-size: 18px;
+    color: var(--text-dim);
+    max-width: 600px;
+    line-height: 1.8;
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-primary {
+    padding: 16px 32px;
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover {
+    background: var(--orange-light);
+    box-shadow: 0 0 40px rgba(249, 115, 22, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    padding: 16px 32px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+
+  /* ── Sections ── */
+  section.content-section {
+    padding: 120px 48px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .section-tag {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    color: var(--orange);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  .section-title {
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+  }
+
+  .section-title .highlight {
+    color: var(--orange);
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  /* ── Feature Cards ── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 48px;
+    position: relative;
+    overflow: visible;
+    transition: all 0.4s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--border-orange);
+    transform: translateY(-4px);
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .feature-card:hover::before {
+    opacity: 1;
+  }
+
+  .feature-card .card-icon {
+    position: absolute;
+    left: -30px;
+    top: -30px;
+    width: 100px;
+    height: 100px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .feature-card .card-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .feature-card h3,
+  .feature-card p,
+  .feature-card .pills {
+    position: relative;
+    z-index: 2;
+  }
+
+  .feature-card h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  .feature-card p {
+    color: var(--text-dim);
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  .feature-card .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .pill.orange {
+    background: var(--orange);
+    color: #fff;
+    border-color: var(--orange);
+  }
+
+  /* ── Process Cards ── */
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .process-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+    cursor: pointer;
+  }
+
+  .process-card:hover {
+    border-color: var(--border-orange);
+  }
+
+  .process-card.featured {
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 100%);
+    border-color: var(--orange);
+  }
+
+  .process-card.featured .p-num,
+  .process-card.featured h4,
+  .process-card.featured p,
+  .process-card.featured .p-deliver {
+    color: #fff;
+  }
+
+  .process-card.featured .p-tag {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border-color: rgba(255,255,255,0.3);
+  }
+
+  .p-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: rgba(249, 115, 22, 0.15);
+    margin-bottom: 20px;
+    line-height: 1;
+  }
+
+  .p-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .process-card h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .process-card p {
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+
+  .p-deliver {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .p-deliver strong {
+    color: var(--orange);
+    font-weight: 600;
+  }
+
+  /* ── Team Cards ── */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+
+  .team-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    text-align: center;
+    transition: all 0.4s;
+  }
+
+  .team-card:hover {
+    border-color: var(--border-orange);
+    transform: translateY(-4px);
+  }
+
+  .team-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--orange-glow);
+    border: 2px solid var(--border-orange);
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--orange);
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .team-card h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .team-card .role {
+    color: var(--orange);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+  }
+
+  .team-card p {
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  /* ── Cases ── */
+  .cases-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .case-tab {
+    padding: 12px 28px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    transition: all 0.3s;
+  }
+
+  .case-tab.active {
+    background: var(--orange);
+    color: #fff;
+    border-color: var(--orange);
+  }
+
+  .cases-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .case-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    transition: all 0.4s;
+  }
+
+  .case-card:hover {
+    border-color: var(--border-orange);
+    transform: translateY(-4px);
+  }
+
+  .case-image-placeholder {
+    width: 100%;
+    height: 180px;
+    background: var(--bg-card-hover);
+    border-radius: var(--radius-sm);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    border: 1px dashed var(--border);
+  }
+
+  .case-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    margin-bottom: 24px;
+  }
+
+  .case-card .case-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    color: var(--orange);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  .case-card h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .case-item {
+    margin-bottom: 16px;
+  }
+
+  .case-item .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 6px;
+  }
+
+  .case-item p {
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .case-detail-link {
+    display: inline-block;
+    margin-top: 16px;
+    color: var(--orange);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .case-detail-link:hover {
+    color: var(--orange-light);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Contact ── */
+  .contact-section {
+    padding: 120px 48px;
+  }
+
+  .contact-box {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 64px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-box::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 200px;
+    background: radial-gradient(ellipse at center, rgba(249, 115, 22, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .contact-box .section-tag {
+    position: relative;
+  }
+
+  .contact-box h2 {
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .contact-box h2 .highlight { color: var(--orange); }
+
+  .contact-box .contact-desc {
+    color: var(--text-dim);
+    font-size: 16px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .contact-wechat-btn {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 18px 48px;
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    position: relative;
+  }
+
+  .contact-wechat-btn:hover {
+    background: var(--orange-light);
+    box-shadow: 0 0 40px rgba(249, 115, 22, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .contact-note {
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--text-muted);
+    position: relative;
+    line-height: 1.8;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 40px 48px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* ── Scroll reveal ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ─ Responsive ── */
+  @media (max-width: 1024px) {
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+    .process-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .hamburger { display: flex; }
+
+    .nav-links {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 280px;
+      height: 100vh;
+      background: rgba(10, 10, 10, 0.98);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      flex-direction: column;
+      padding: 100px 32px 40px;
+      gap: 24px;
+      transition: right 0.3s ease;
+      border-left: 1px solid var(--border);
+    }
+
+    .nav-links.open { right: 0; }
+
+    .nav-links a {
+      font-size: 18px;
+      padding: 8px 0;
+    }
+
+    .nav-cta { display: none; }
+
+    section.content-section { padding: 64px 20px; }
+    nav { padding: 16px 20px; }
+    .nav-links { display: flex; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .cases-grid { grid-template-columns: 1fr; }
+    .team-grid { grid-template-columns: 1fr; }
+    .process-grid { grid-template-columns: 1fr; }
+    .hero { padding: 100px 20px 60px; min-height: 100vh; }
+    .hero-glow { display: none; }
+    .hero h1 { font-size: clamp(32px, 10vw, 48px); letter-spacing: -1px; }
+    .hero-desc { font-size: 15px; }
+    .hero-badge { font-size: 12px; padding: 6px 16px; flex-wrap: wrap; justify-content: center; }
+    .hero-buttons { flex-direction: column; width: 100%; }
+    .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+    .section-title { font-size: clamp(28px, 8vw, 40px); }
+    .feature-card { padding: 32px 24px; }
+    .feature-card .card-icon { left: 16px; top: -20px; width: 72px; height: 72px; }
+    .process-card { padding: 32px 24px; }
+    .contact-box { padding: 48px 24px; }
+    .contact-box h2 { font-size: clamp(28px, 8vw, 40px); }
+    .cases-tabs { flex-wrap: wrap; }
+    footer { padding: 32px 20px; }
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="logo">BIU</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#services">业务</a></li>
+    <li><a href="#process">流程</a></li>
+    <li><a href="#about">关于</a></li>
+    <li><a href="#cases">案例</a></li>
+    <li><a href="#contact">联系</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">开始合作</a>
+  <button class="hamburger" id="hamburger" aria-label="菜单">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <h1 class="reveal">
+    智能解决方案<br>
+    <span class="highlight">AI 驱动交付</span>
+  </h1>
+
+  <p class="hero-desc reveal">
+    BIU必优专注为个人与企业提供从需求诊断、POC 验证、MVP 试用到正式上线的一站式 Agent、小程序与增长自动化定制开发服务。
+  </p>
+
+  <div class="hero-buttons reveal">
+    <a href="#services" class="btn-primary">了解服务 →</a>
+    <a href="#contact" class="btn-secondary">联系我们 →</a>
+  </div>
+</section>
+
+<!-- About / Services -->
+<section id="services" class="content-section">
+  <div class="section-header reveal">
+    <div class="section-tag">Services</div>
+    <h2 class="section-title">业务<span class="highlight">范围</span></h2>
+    <p class="section-subtitle">
+      从 Agent 到小程序，从内容到增长，<br>全链路定制交付。
+    </p>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="card-icon"><img src="images/star.png" alt="AI Agent"></div>
+      <h3>AI Agent 定制</h3>
+      <p>个人专属 Agent、企业流程自动化、职业专属助手，以及 AI 增长与内容自动化方案。</p>
+      <div class="pills">
+        <span class="pill orange">知识库 Agent</span>
+        <span class="pill">流程自动化</span>
+        <span class="pill">CRM/ERP 对接</span>
+        <span class="pill">AI 架构咨询</span>
+      </div>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="card-icon"><img src="images/wechat.png" alt="微信小程序"></div>
+      <h3>微信小程序定制</h3>
+      <p>品牌展示、预约系统、商城、会员体系、工具类小程序，以及 Agent + 小程序融合应用。</p>
+      <div class="pills">
+        <span class="pill orange">品牌展示</span>
+        <span class="pill">商城系统</span>
+        <span class="pill">会员体系</span>
+        <span class="pill">Agent 融合</span>
+      </div>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="card-icon"><img src="images/growth.png" alt="新媒体增长"></div>
+      <h3>新媒体与品牌增长</h3>
+      <p>个人 IP 孵化、品牌新媒体增长策略、AI + 新媒体增长专项，从定位到变现全链路。</p>
+      <div class="pills">
+        <span class="pill orange">IP 孵化</span>
+        <span class="pill">内容体系</span>
+        <span class="pill">矩阵运营</span>
+        <span class="pill">AI 内容生产</span>
+      </div>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-4">
+      <div class="card-icon"><img src="images/gear.png" alt="技术支撑"></div>
+      <h3>技术支撑与集成</h3>
+      <p>模型接入、RAG 知识库、工作流编排、API 集成、权限管理、日志监控、私有化部署。</p>
+      <div class="pills">
+        <span class="pill orange">RAG</span>
+        <span class="pill">工作流编排</span>
+        <span class="pill">API 集成</span>
+        <span class="pill">私有化部署</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Process -->
+<section id="process" class="content-section">
+  <div class="section-header reveal">
+    <div class="section-tag">Process</div>
+    <h2 class="section-title">业务<span class="highlight">流程</span></h2>
+    <p class="section-subtitle">
+      每个阶段有文档、有演示、有确认。<br>先 POC 后投入，先 MVP 后正式。
+    </p>
+  </div>
+
+  <div class="process-grid">
+    <div class="process-card reveal reveal-delay-1">
+      <div class="p-num">01</div>
+      <div class="p-tag">Discovery</div>
+      <h4>需求分析</h4>
+      <p>通过业务访谈、增长诊断、场景盘点与可行性评估，明确客户真正要解决的问题。</p>
+      <div class="p-deliver"><strong>交付物：</strong>《需求分析纪要》《业务/增长诊断》《场景优先级清单》</div>
+    </div>
+
+    <div class="process-card reveal reveal-delay-2">
+      <div class="p-num">02</div>
+      <div class="p-tag">Validation</div>
+      <h4>POC 需求确认</h4>
+      <p>确认试点场景、验收指标、功能边界与项目目标，优先验证最核心的业务价值。</p>
+      <div class="p-deliver"><strong>交付物：</strong>《POC 确认书》《验收指标说明》</div>
+    </div>
+
+    <div class="process-card reveal reveal-delay-3">
+      <div class="p-num">03</div>
+      <div class="p-tag">Agreement</div>
+      <h4>报价 & 定金</h4>
+      <p>明确开发范围、周期、费用、里程碑与双方责任，签署合同并支付启动定金。</p>
+      <div class="p-deliver"><strong>交付物：</strong>《报价清单》《项目排期表》《合同》</div>
+    </div>
+
+    <div class="process-card reveal reveal-delay-1">
+      <div class="p-num">04</div>
+      <div class="p-tag">Build</div>
+      <h4>搭建 MVP</h4>
+      <p>快速搭建最小可用版本，优先打通核心流程，让客户尽早看到效果。</p>
+      <div class="p-deliver"><strong>交付物：</strong>可运行 MVP、演示说明、操作指引</div>
+    </div>
+
+    <div class="process-card reveal reveal-delay-2">
+      <div class="p-num">05</div>
+      <div class="p-tag">Feedback</div>
+      <h4>试用反馈</h4>
+      <p>在真实业务场景中试用，收集反馈，确认下一阶段迭代方向。</p>
+      <div class="p-deliver"><strong>交付物：</strong>《试用反馈与迭代清单》</div>
+    </div>
+
+    <div class="process-card reveal reveal-delay-3">
+      <div class="p-num">06</div>
+      <div class="p-tag">Delivery</div>
+      <h4>正式开发 → 交付</h4>
+      <p>二期款项 → 正式搭建 → UAT 验收 → 最终调试 → 结款交付，进入质保/运维期。</p>
+      <div class="p-deliver"><strong>交付物：</strong>正式系统、接口文档、操作手册、《交付清单》</div>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section id="about" class="content-section">
+  <div class="section-header reveal">
+    <div class="section-tag">Team</div>
+    <h2 class="section-title">核心<span class="highlight">团队</span></h2>
+    <p class="section-subtitle">
+      既懂增长，也懂交付。<br>不卖概念，只做能落地、能使用、能迭代的系统。
+    </p>
+  </div>
+
+  <div class="team-grid">
+    <div class="team-card reveal reveal-delay-1">
+      <div class="team-avatar">C</div>
+      <h4>Cliff</h4>
+      <div class="role">品牌增长 & 解决方案</div>
+      <p>10年资深新媒体人，5年头部MCN/品牌总监，孵化博主100+，精通各平台算法与流量机制，擅长品牌定位与IP孵化。</p>
+    </div>
+
+    <div class="team-card reveal reveal-delay-2">
+      <div class="team-avatar">S</div>
+      <h4>Steven</h4>
+      <div class="role">流程架构 & Agent 开发</div>
+      <p>5年资深内容制作人，擅长复杂流程拆解、Agent搭建、执行调试及持续优化，推动需求转化为可运行的工作流。</p>
+    </div>
+
+    <div class="team-card reveal reveal-delay-3">
+      <div class="team-avatar">P</div>
+      <h4>Philip</h4>
+      <div class="role">国际贸易 & 商业落地</div>
+      <p>10年资深国际贸易人，擅长国际品牌对接与海外收款体系搭建，推动企业业务流程自动化与全球化商业落地。</p>
+    </div>
+
+    <div class="team-card reveal reveal-delay-4">
+      <div class="team-avatar">C</div>
+      <h4>Chase</h4>
+      <div class="role">视觉创意 & AI 商业化</div>
+      <p>7年CG动画创作、4年阿里国际站设计经验，深耕跨境视觉内容与产品认知动画，持续探索AI商业化落地。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Cases -->
+<section id="cases" class="content-section">
+  <div class="section-header reveal">
+    <div class="section-tag">Cases</div>
+    <h2 class="section-title">已交付<span class="highlight">案例</span></h2>
+    <p class="section-subtitle">
+      企业级与个人客户的<br>真实交付成果。
+    </p>
+  </div>
+
+  <div class="cases-tabs reveal">
+    <button class="case-tab" onclick="switchTab(this, 'enterprise')">企业案例</button>
+    <button class="case-tab active" onclick="switchTab(this, 'personal')">个人案例</button>
+  </div>
+
+  <div class="cases-grid" id="cases-enterprise" style="display:none;">
+    <div class="case-card reveal reveal-delay-1">
+      <div class="case-image-placeholder">[ 案例截图占位 ]</div>
+      <div class="case-num">CASE 01</div>
+      <h4>企业案例一</h4>
+      <div class="case-item"><div class="label">客户需求</div><p>待补充</p></div>
+      <div class="case-item"><div class="label">方案</div><p>待补充</p></div>
+      <div class="case-item"><div class="label">结果</div><p>待补充</p></div>
+    </div>
+
+    <div class="case-card reveal reveal-delay-2">
+      <div class="case-image-placeholder">[ 案例截图占位 ]</div>
+      <div class="case-num">CASE 02</div>
+      <h4>企业案例二</h4>
+      <div class="case-item"><div class="label">客户需求</div><p>待补充</p></div>
+      <div class="case-item"><div class="label">方案</div><p>待补充</p></div>
+      <div class="case-item"><div class="label">结果</div><p>待补充</p></div>
+    </div>
+
+    <div class="case-card reveal reveal-delay-3">
+      <div class="case-image-placeholder">[ 案例截图占位 ]</div>
+      <div class="case-num">CASE 03</div>
+      <h4>企业案例三</h4>
+      <div class="case-item"><div class="label">客户需求</div><p>待补充</p></div>
+      <div class="case-item"><div class="label">方案</div><p>待补充</p></div>
+      <div class="case-item"><div class="label">结果</div><p>待补充</p></div>
+    </div>
+  </div>
+
+  <div class="cases-grid" id="cases-personal">
+    <div class="case-card reveal reveal-delay-1">
+      <div class="case-image-placeholder">[ 案例截图占位 ]</div>
+      <div class="case-num">CASE 01</div>
+      <h4>小红书图文种草 Agent</h4>
+      <div class="case-item"><div class="label">客户需求</div><p>双号矩阵运营小红书好物账号，不露脸、桌面静物拍摄，需定位差异化、选题可持续、内容合规。</p></div>
+      <div class="case-item"><div class="label">方案</div><p>采集 6000+ 真实笔记沉淀数据资产，构建选题引擎（129品类×16角度），建立内容方法论与风控体系，双号差异化定位+SOP。</p></div>
+      <div class="case-item"><div class="label">结果</div><p>全流程自动化内容生产 Agent，输入商品信息即输出可发布成品，人工仅保留拍摄与剪辑。</p></div>
+      <a href="#" class="case-detail-link">查看详情 →</a>
+    </div>
+
+    <div class="case-card reveal reveal-delay-2">
+      <img src="images/case-crossborder.png" alt="跨境电商选品Agent" class="case-image">
+      <div class="case-num">CASE 02</div>
+      <h4>跨境电商选品研究 Agent</h4>
+      <div class="case-item"><div class="label">客户需求</div><p>跨境选品需查找商品背后的品牌、公司、官网及中国大陆商业关系，原有流程分散、重复、无法共享。</p></div>
+      <div class="case-item"><div class="label">方案</div><p>商品页面自动采集→人工筛选→海外品牌研究→国内关系整理→信息去重→来源复核→团队资料库，全链路闭环。</p></div>
+      <div class="case-item"><div class="label">结果</div><p>从商品采集到资料归档的完整研究 Agent，支持多人协作、来源可复核、资料可持续积累。</p></div>
+      <a href="#" class="case-detail-link">查看详情 →</a>
+    </div>
+
+    <div class="case-card reveal reveal-delay-3">
+      <img src="images/case-stock.png" alt="A股短线量化选股系统" class="case-image">
+      <div class="case-num">CASE 03</div>
+      <h4>A 股短线量化选股系统</h4>
+      <div class="case-item"><div class="label">客户需求</div><p>将个人盘感经验转化为可验证、可复制、可复盘的量化规则，每日尾盘自动选股并给出买卖策略。</p></div>
+      <div class="case-item"><div class="label">方案</div><p>自建四年全市场分钟级数据底座，构建 119 项因子，穷举挖掘 1220 条规则卡，三级风控闸门，全自动执行留痕。</p></div>
+      <div class="case-item"><div class="label">结果</div><p>样本外胜率 70.8%，单笔平均 +2.87%；选股耗时从 789s 压缩至 75s，每交易日 14:40 自动推送。</p></div>
+      <a href="#" class="case-detail-link">查看详情 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact" class="contact-section">
+  <div class="contact-box reveal">
+    <div class="section-tag">Contact</div>
+    <h2>开启<span class="highlight">合作</span></h2>
+    <p class="contact-desc">BIU必优｜Agent 定制与小程序开发工作室</p>
+    <p class="contact-desc">商务电话 / 微信：【填写】</p>
+    <a href="#" class="contact-wechat-btn">添加微信咨询</a>
+    <div class="contact-note">
+      添加请备注：Agent / 小程序 / 增长合作 + 称呼<br>
+      我们会在 1 个工作日内回复 · 可签署 NDA，项目资料严格保密
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 BIU必优工作室 · 让业务自动化，让智能可交付</p>
+</footer>
+
+<script>
+// ── Scroll reveal ──
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+reveals.forEach(el => observer.observe(el));
+
+// ── Nav scroll ──
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ── Mobile menu ──
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navLinks.classList.toggle('open');
+});
+
+navLinks.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    navLinks.classList.remove('open');
+  });
+});
+
+// ── Case tabs ──
+function switchTab(btn, type) {
+  document.querySelectorAll('.case-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cases-enterprise').style.display = type === 'enterprise' ? 'grid' : 'none';
+  document.getElementById('cases-personal').style.display = type === 'personal' ? 'grid' : 'none';
+}
+</script>
+
+</body>
+</html>
