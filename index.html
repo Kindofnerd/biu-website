@@ -898,30 +898,20 @@
     .timeline-card p { font-size: 13px; margin-bottom: 12px; }
     .timeline-card .t-deliver { font-size: 11px; padding-top: 12px; }
 
-    /* ── Team Cards ─ */
+    /* ─ Team Cards ── */
     .team-grid {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      gap: 16px;
-      padding-bottom: 8px;
-      margin: 0 -20px;
-      padding-left: 20px;
-      padding-right: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
-    .team-grid::-webkit-scrollbar { display: none; }
     .team-card {
-      min-width: 260px;
-      scroll-snap-align: start;
-      flex-shrink: 0;
-      padding: 28px 20px;
+      padding: 24px 16px;
       border-radius: var(--radius-sm);
     }
-    .team-avatar { width: 60px; height: 60px; font-size: 20px; margin-bottom: 16px; }
-    .team-card h4 { font-size: 16px; }
-    .team-card .role { font-size: 11px; margin-bottom: 12px; }
-    .team-card p { font-size: 12px; }
+    .team-avatar { width: 52px; height: 52px; font-size: 18px; margin-bottom: 12px; }
+    .team-card h4 { font-size: 15px; }
+    .team-card .role { font-size: 11px; margin-bottom: 10px; }
+    .team-card p { font-size: 12px; line-height: 1.6; }
 
     /* ─ Cases ── */
     .cases-grid { grid-template-columns: 1fr; gap: 16px; }
