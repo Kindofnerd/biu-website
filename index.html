@@ -815,6 +815,7 @@
       gap: 24px;
       transition: right 0.3s ease;
       border-left: 1px solid var(--border);
+      z-index: 1000;
     }
 
     .nav-links.open { right: 0; }
@@ -824,33 +825,125 @@
       padding: 8px 0;
     }
 
+    .nav-cta-mobile {
+      display: inline-block;
+      text-align: center;
+      background: var(--orange);
+      color: #fff !important;
+      border-radius: 100px;
+      padding: 14px 28px !important;
+      font-size: 16px !important;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
     .nav-cta { display: none; }
 
-    section.content-section { padding: 64px 20px; }
-    nav { padding: 16px 20px; }
-    .nav-links { display: flex; }
-    .feature-grid { grid-template-columns: 1fr; }
-    .cases-grid { grid-template-columns: 1fr; }
-    .team-grid { grid-template-columns: 1fr; }
-    .process-grid { grid-template-columns: 1fr; }
-    .timeline::before { left: 20px; }
-    .timeline-item { width: 100%; left: 0 !important; text-align: left !important; padding: 0 0 40px 52px; }
-    .timeline-item::before { left: 12px !important; right: auto !important; }
-    .hero { padding: 100px 20px 60px; min-height: 100vh; }
-    .hero-glow { display: none; }
-    .hero h1 { font-size: clamp(32px, 10vw, 48px); letter-spacing: -1px; }
-    .hero-desc { font-size: 15px; }
-    .hero-badge { font-size: 12px; padding: 6px 16px; flex-wrap: wrap; justify-content: center; }
+    /* ── Hero ── */
+    .hero { padding: 100px 20px 60px; min-height: 100svh; }
+    .hero h1 { font-size: clamp(30px, 9vw, 44px); letter-spacing: -1px; }
+    .hero-desc { font-size: 14px; line-height: 1.7; margin-bottom: 32px; }
+    .hero-badge { font-size: 11px; padding: 6px 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px; }
     .hero-buttons { flex-direction: column; width: 100%; }
-    .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
-    .section-title { font-size: clamp(28px, 8vw, 40px); }
-    .feature-card { padding: 32px 24px; }
-    .feature-card .card-icon { left: 16px; top: -20px; width: 72px; height: 72px; }
-    .process-card { padding: 32px 24px; }
-    .contact-box { padding: 48px 24px; }
-    .contact-box h2 { font-size: clamp(28px, 8vw, 40px); }
-    .cases-tabs { flex-wrap: wrap; }
-    footer { padding: 32px 20px; }
+    .btn-primary, .btn-secondary { width: 100%; justify-content: center; padding: 14px 24px; font-size: 14px; }
+
+    /* ── Sections ── */
+    section.content-section { padding: 56px 20px; }
+    nav { padding: 14px 20px; }
+    .section-header { margin-bottom: 48px; }
+    .section-title { font-size: clamp(26px, 8vw, 36px); }
+    .section-subtitle { font-size: 14px; }
+
+    /* ─ Feature Cards ── */
+    .feature-grid { grid-template-columns: 1fr; gap: 16px; }
+    .feature-card {
+      padding: 40px 20px 24px;
+      border-radius: var(--radius-sm);
+    }
+    .feature-card .card-icon {
+      position: relative;
+      left: auto;
+      top: auto;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 16px;
+    }
+    .feature-card h3 { font-size: 20px; margin-bottom: 12px; }
+    .feature-card p { font-size: 14px; margin-bottom: 16px; }
+    .feature-card .pills { gap: 6px; }
+    .pill { padding: 5px 12px; font-size: 11px; }
+
+    /* ── Timeline ─ */
+    .timeline { padding: 12px 0; }
+    .timeline::before { left: 16px; }
+    .timeline-item {
+      width: 100%;
+      left: 0 !important;
+      text-align: left !important;
+      padding: 0 0 28px 44px;
+    }
+    .timeline-item::before {
+      left: 9px !important;
+      right: auto !important;
+      width: 14px;
+      height: 14px;
+      top: 6px;
+    }
+    .timeline-card {
+      padding: 20px;
+      border-radius: var(--radius-sm);
+    }
+    .timeline-card .t-step { font-size: 10px; margin-bottom: 6px; }
+    .timeline-card h4 { font-size: 17px; margin-bottom: 8px; }
+    .timeline-card p { font-size: 13px; margin-bottom: 12px; }
+    .timeline-card .t-deliver { font-size: 11px; padding-top: 12px; }
+
+    /* ── Team Cards ─ */
+    .team-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 16px;
+      padding-bottom: 8px;
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .team-grid::-webkit-scrollbar { display: none; }
+    .team-card {
+      min-width: 260px;
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      padding: 28px 20px;
+      border-radius: var(--radius-sm);
+    }
+    .team-avatar { width: 60px; height: 60px; font-size: 20px; margin-bottom: 16px; }
+    .team-card h4 { font-size: 16px; }
+    .team-card .role { font-size: 11px; margin-bottom: 12px; }
+    .team-card p { font-size: 12px; }
+
+    /* ─ Cases ── */
+    .cases-grid { grid-template-columns: 1fr; gap: 16px; }
+    .case-card { padding: 24px 20px; border-radius: var(--radius-sm); }
+    .case-image-placeholder, .case-image { height: 160px; margin-bottom: 20px; border-radius: 12px; }
+    .case-card h4 { font-size: 18px; margin-bottom: 16px; }
+    .case-item { margin-bottom: 12px; }
+    .case-item .label { font-size: 10px; margin-bottom: 4px; }
+    .case-item p { font-size: 13px; }
+    .cases-tabs { gap: 8px; margin-bottom: 32px; }
+    .case-tab { padding: 10px 20px; font-size: 13px; }
+
+    /* ── Contact ── */
+    .contact-section { padding: 56px 20px; }
+    .contact-box { padding: 40px 20px; border-radius: 24px; }
+    .contact-box h2 { font-size: clamp(26px, 8vw, 36px); }
+    .contact-box .contact-desc { font-size: 14px; }
+    .contact-wechat-btn { padding: 16px 36px; font-size: 15px; margin-top: 32px; }
+    .contact-note { font-size: 12px; margin-top: 20px; }
+
+    /* ── Footer ── */
+    footer { padding: 28px 20px; font-size: 12px; }
   }
 
   /* ── Scrollbar ── */
@@ -869,6 +962,7 @@
     <li><a href="#about">关于</a></li>
     <li><a href="#cases">案例</a></li>
     <li><a href="#contact">联系</a></li>
+    <li><a href="#contact" class="nav-cta-mobile">开始合作</a></li>
   </ul>
   <a href="#contact" class="nav-cta">开始合作</a>
   <button class="hamburger" id="hamburger" aria-label="菜单">
